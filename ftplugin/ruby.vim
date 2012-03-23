@@ -1,7 +1,12 @@
-command! RunAllRubyTests :call RunVimuxRspec(bufname("%"))
-command! RunRubyFocusedTest :call RunVimuxRspec(bufname("%") . " -l " . line("."))
+if exists("g:loaded_vimux_ruby_test") || &cp
+  finish
+endif
+let g:loaded_vimux_ruby_test = 1
 
-function! RunVimuxRspec(args)
+command RunAllRubyTests :call RunVimuxRspec(bufname("%"))
+command RunRubyFocusedTest :call RunVimuxRspec(bufname("%") . " -l " . line("."))
+
+function RunVimuxRspec(args)
   if executable("rspec")
     let l:spec_command = "rspec"
   else
