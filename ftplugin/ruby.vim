@@ -2,10 +2,10 @@ if !has("ruby")
   finish
 end
 
-command RunAllRubyTests :call RunVimuxRspec(bufname("%"))
-command RunRubyFocusedTest :call RunVimuxRspec(bufname("%") . " -l " . line("."))
+command! RunAllRubyTests :call RunVimuxRspec(bufname("%"))
+command! RunRubyFocusedTest :call RunVimuxRspec(bufname("%") . " -l " . line("."))
 
-function RunVimuxRspec(args)
+function! RunVimuxRspec(args)
   if executable("rspec")
     let l:spec_command = "rspec"
   else
