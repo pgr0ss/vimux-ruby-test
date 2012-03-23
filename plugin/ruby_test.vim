@@ -2,8 +2,8 @@ if !has("ruby")
   finish
 end
 
-command RunAllRubyTests :call RunVimuxRspec(bufname("%"))<CR>
-command RunRubyFocusedTest :call RunVimuxRspec(bufname("%") . " -l " . line("."))<CR>
+command RunAllRubyTests :call RunVimuxRspec(bufname("%"))
+command RunRubyFocusedTest :call RunVimuxRspec(bufname("%") . " -l " . line("."))
 
 function RunVimuxRspec(args)
   if executable("rspec")
