@@ -118,7 +118,9 @@ class RubyTest
   end
 
   def send_to_vimux(test_command)
-    CurrentTmuxSession.new.run_shell_command("clear && " + test_command)
+    command = "clear &&" + test_command
+    Vim.command("let g:_VimTmuxCmd = \"#{command}\"")
+    CurrentTmuxSession.new.run_shell_command(command)
   end
 end
 EOF
