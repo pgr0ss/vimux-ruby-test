@@ -19,6 +19,7 @@ Use any of the commands below. Map them to shortcuts
 in your .vimrc for easy access.
 
   - RunRubyFocusedTest - run focused test/spec
+  - RunRailsFocusedTest - run focused test (no spec support) in a Rails app
   - RunRubyFocusedContext - run current context (rspec, shoulda)
   - RunAllRubyTests - run all the tests/specs in the current file
 

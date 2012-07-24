@@ -9,6 +9,7 @@ end
 
 command RunAllRubyTests :call s:RunAllRubyTests()
 command RunRubyFocusedTest :call s:RunRubyFocusedTest()
+command RunRailsFocusedTest :call s:RunRailsFocusedTest()
 command RunRubyFocusedContext :call s:RunRubyFocusedContext()
 
 function s:RunAllRubyTests()
@@ -17,6 +18,10 @@ endfunction
 
 function s:RunRubyFocusedTest()
   ruby RubyTest.new.run_test
+endfunction
+
+function s:RunRailsFocusedTest()
+  ruby RubyTest.new.run_test(true)
 endfunction
 
 function s:RunRubyFocusedContext()
@@ -37,6 +42,10 @@ class RubyTest
     VIM::Buffer.current.name
   end
 
+  def rails_test_dir
+    current_file.split('/')[0..-current_file.split('/').reverse.index('test')-1].join('/')
+  end
+
   def spec_file?
     current_file =~ /spec_|_spec/
   end
@@ -49,7 +58,7 @@ class RubyTest
     send_to_vimux("#{spec_command} '#{current_file}' -l #{line_number}")
   end
 
-  def run_unit_test
+  def run_unit_test(rails=false)
     method_name = nil
 
     (line_number + 1).downto(1) do |line_number|
@@ -67,14 +76,14 @@ class RubyTest
       end
     end
 
-    send_to_vimux("ruby #{current_file} -n #{method_name}") if method_name
+    send_to_vimux("ruby #{"-I #{rails_test_dir} " if rails}#{current_file} -n #{method_name}") if method_name
   end
 
-  def run_test
+  def run_test(rails=false)
     if spec_file?
       run_spec
     else
-      run_unit_test
+      run_unit_test(rails)
     end
   end
 
