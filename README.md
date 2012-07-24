@@ -39,3 +39,4 @@ CONTRIBUTORS:
 
 - [Drew Olson](https://github.com/drewolson)
 - [Paul Gross](https://github.com/pgr0ss)
+- [Kendall Buchanan](https://github.com/kendagriff)
