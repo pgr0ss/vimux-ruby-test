@@ -119,7 +119,9 @@ class RubyTest
   end
 
   def spec_command
-    if File.exists?("Gemfile") && match = `bundle show rspec`.match(/(\d+\.\d+\.\d+)$/)
+    if File.exists('./bin/rspec')
+      './bin/rspec'
+    elsif File.exists?("Gemfile") && match = `bundle show rspec`.match(/(\d+\.\d+\.\d+)$/)
       match.to_a.last.to_f < 2 ? "bundle exec spec" : "bundle exec rspec"
     else
       system("rspec -v > /dev/null 2>&1") ? "rspec --no-color" : "spec"
