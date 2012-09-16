@@ -8,12 +8,17 @@ if !has("ruby")
 end
 
 command RunAllRubyTests :call s:RunAllRubyTests()
+command RunAllRailsTests :call s:RunAllRailsTests()
 command RunRubyFocusedTest :call s:RunRubyFocusedTest()
 command RunRailsFocusedTest :call s:RunRailsFocusedTest()
 command RunRubyFocusedContext :call s:RunRubyFocusedContext()
 
 function s:RunAllRubyTests()
   ruby RubyTest.new.run_all
+endfunction
+
+function s:RunAllRailsTests()
+  ruby RubyTest.new.run_all(true)
 endfunction
 
 function s:RunRubyFocusedTest()
@@ -110,11 +115,11 @@ class RubyTest
     end
   end
 
-  def run_all
+  def run_all(rails=false)
     if spec_file?
       send_to_vimux("#{spec_command} '#{current_file}'")
     else
-      send_to_vimux("ruby '#{current_file}'")
+      send_to_vimux("ruby #{"-I #{rails_test_dir} " if rails}#{current_file}")
     end
   end
 
