@@ -23,6 +23,14 @@ in your .vimrc for easy access.
   - RunRubyFocusedContext - run current context (rspec, shoulda)
   - RunAllRubyTests - run all the tests/specs in the current file
 
+You can also use the following settings in .vimrc to configure the command used to run ruby tests:
+
+```vim
+let g:vimux_ruby_cmd_unit_test = "bundle exec ruby"
+let g:vimux_ruby_cmd_all_tests = "testdrb"
+let g:vimux_ruby_cmd_context = "FOO=bar ruby"
+```
+
 INSTALL
 ====================
 
