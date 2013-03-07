@@ -119,8 +119,8 @@ class RubyTest
       if spec_file?
         send_to_vimux("#{spec_command} #{current_file} -l #{context_line_number}")
       else
-        method_name = "\"/#{Regexp.escape(method_name)}/\""
-        send_to_vimux("#{ruby_command} #{current_file} -n #{method_name}")
+        method_name = Regexp.escape(method_name)
+        send_to_vimux("#{ruby_command} #{current_file} -n /'#{method_name}'/")
       end
     end
   end
