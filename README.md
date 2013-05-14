@@ -31,7 +31,7 @@ REQUIREMENTS
 ====================
 
 - vim with ruby support (compiled +ruby)
-- [vimux](https://github.com/benmills/vimux)
+- [vimux](https://github.com/benmills/vimux) >= 0.3.0
 
 CONTRIBUTORS:
 ====================
