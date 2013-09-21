@@ -16,6 +16,9 @@ endif
 if !exists("g:vimux_ruby_cmd_context")
   let g:vimux_ruby_cmd_context = "ruby"
 endif
+if !exists("g:vimux_ruby_clear_console_on_run")
+  let g:vimux_ruby_clear_console_on_run = 1
+endif
 
 command RunAllRubyTests :call s:RunAllRubyTests()
 command RunAllRailsTests :call s:RunAllRailsTests()
@@ -146,7 +149,13 @@ class RubyTest
   end
 
   def send_to_vimux(test_command)
-    Vim.command("call VimuxRunCommand(\"clear && #{test_command}\")")
+    cmd = if VIM::evaluate("g:vimux_ruby_clear_console_on_run") != 0
+      "clear && "
+    else
+      ''
+    end
+    cmd += test_command
+    Vim.command("call VimuxRunCommand(\"#{cmd}\")")
   end
 end
 EOF
