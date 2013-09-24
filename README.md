@@ -31,6 +31,13 @@ let g:vimux_ruby_cmd_all_tests = "testdrb"
 let g:vimux_ruby_cmd_context = "FOO=bar ruby"
 ```
 
+By default, vim-ruby-test clears the tmux pane in which the command is run. You can configure
+this behavior:
+
+```vim
+let g:vimux_ruby_clear_console_on_run = 0
+```
+
 INSTALL
 ====================
 
@@ -48,3 +55,4 @@ CONTRIBUTORS:
 - [Drew Olson](https://github.com/drewolson)
 - [Paul Gross](https://github.com/pgr0ss)
 - [Kendall Buchanan](https://github.com/kendagriff)
+- [Thomas Mayfield](https://github.com/thegreatape)
