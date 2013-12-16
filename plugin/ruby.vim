@@ -141,11 +141,24 @@ class RubyTest
       'zeus rspec'
     elsif File.exists?('./bin/rspec')
       './bin/rspec'
-    elsif File.exists?("Gemfile") && (match = `bundle show rspec-core`.match(/(\d+\.\d+\.\d+)$/) || match = `bundle show rspec`.match(/(\d+\.\d+\.\d+)$/i))
-      match.to_a.last.to_f < 2 ? "bundle exec spec" : "bundle exec rspec"
+    elsif _bundled_rspec?
+      _rspec_major_version < 2 ? "bundle exec spec" : "bundle exec rspec"
     else
       system("rspec -v > /dev/null 2>&1") ? "rspec --no-color" : "spec"
     end
+  end
+
+  def _bundled_rspec?
+    File.exists?("Gemfile") && (_rspec_major_version != nil)
+  end
+
+  def _rspec_major_version
+    return unless _rspec_path
+    _rspec_path.match(/(\d+\.\d+\.\d+(.beta\d)?)$/).to_a.first.to_i
+  end
+
+  def _rspec_path
+    @path ||= (`bundle show rspec-core` || `bundle show rspec`)
   end
 
   def send_to_vimux(test_command)
