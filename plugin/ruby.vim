@@ -141,8 +141,8 @@ class RubyTest
       'zeus rspec'
     elsif File.exists?('./bin/rspec')
       './bin/rspec'
-    elsif File.exists?("Gemfile") && (match = `bundle show rspec-core`.match(/(\d+\.\d+\.\d+)/) || match = `bundle show rspec`.match(/(\d+\.\d+\.\d+)/i))
-      match.to_a.last.to_f < 2 ? "bundle exec spec" : "bundle exec rspec"
+    elsif File.exists?("Gemfile") && (match = `bundle show rspec-core`.scan(/(\d+\.\d+\.\d+)/) || match = `bundle show rspec`.scan(/(\d+\.\d+\.\d+)/i))
+      match.flatten.last.to_f < 2 ? "bundle exec spec" : "bundle exec rspec"
     else
       system("rspec -v > /dev/null 2>&1") ? "rspec --no-color" : "spec"
     end
