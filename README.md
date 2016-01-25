@@ -38,6 +38,12 @@ this behavior:
 let g:vimux_ruby_clear_console_on_run = 0
 ```
 
+By default, vim-ruby-test uses the absolute path for file arguments. You can configure it to instead use relative paths with:
+
+```vim
+let g:vimux_ruby_file_relative_paths = 1
+```
+
 INSTALL
 ====================
 

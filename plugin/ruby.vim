@@ -19,6 +19,9 @@ endif
 if !exists("g:vimux_ruby_clear_console_on_run")
   let g:vimux_ruby_clear_console_on_run = 1
 endif
+if !exists("g:vimux_ruby_file_relative_paths")
+  let g:vimux_ruby_file_relative_paths = 0
+endif
 
 command RunAllRubyTests :call s:RunAllRubyTests()
 command RunAllRailsTests :call s:RunAllRailsTests()
@@ -27,23 +30,23 @@ command RunRailsFocusedTest :call s:RunRailsFocusedTest()
 command RunRubyFocusedContext :call s:RunRubyFocusedContext()
 
 function s:RunAllRubyTests()
-  ruby RubyTest.new.run_all(false, Vim.evaluate('g:vimux_ruby_cmd_all_tests'))
+  ruby RubyTest.create_from_settings.run_all
 endfunction
 
 function s:RunAllRailsTests()
-  ruby RubyTest.new.run_all(true, Vim.evaluate('g:vimux_ruby_cmd_all_tests'))
+  ruby RubyTest.create_from_settings.run_all(true)
 endfunction
 
 function s:RunRubyFocusedTest()
-  ruby RubyTest.new.run_test(false, Vim.evaluate('g:vimux_ruby_cmd_unit_test'))
+  ruby RubyTest.create_from_settings.run_test
 endfunction
 
 function s:RunRailsFocusedTest()
-  ruby RubyTest.new.run_test(true, Vim.evaluate('g:vimux_ruby_cmd_unit_test'))
+  ruby RubyTest.create_from_settings.run_test(true)
 endfunction
 
 function s:RunRubyFocusedContext()
-  ruby RubyTest.new.run_context(Vim.evaluate('g:vimux_ruby_cmd_context'))
+  ruby RubyTest.create_from_settings.run_context
 endfunction
 
 ruby << EOF
@@ -56,8 +59,20 @@ module VIM
 end
 
 class RubyTest
+  attr_reader :ruby_command
+  attr_reader :use_relative_path
+
+  def self.create_from_settings
+    self.new(Vim.evaluate('g:vimux_ruby_cmd_all_tests'), Vim.evaluate('g:vimux_ruby_file_relative_paths'))
+  end
+
+  def initialize(ruby_command, use_relative_path)
+    @ruby_command = ruby_command
+    @use_relative_path = use_relative_path
+  end
+
   def current_file
-    VIM::Buffer.current.name
+    use_relative_path == 0 ? VIM::Buffer.current.name : Vim.evaluate('expand("%")')
   end
 
   def rails_test_dir
@@ -76,7 +91,7 @@ class RubyTest
     send_to_vimux("#{spec_command} #{current_file}:#{line_number}")
   end
 
-  def run_unit_test(rails=false, ruby_command='ruby')
+  def run_unit_test(rails=false)
     method_name = nil
 
     (line_number + 1).downto(1) do |line_number|
@@ -97,15 +112,15 @@ class RubyTest
     send_to_vimux("#{ruby_command} #{"-I #{rails_test_dir} " if rails}#{current_file} -n #{method_name}") if method_name
   end
 
-  def run_test(rails=false, ruby_command='ruby')
+  def run_test(rails=false)
     if spec_file?
       run_spec
     else
-      run_unit_test(rails, ruby_command)
+      run_unit_test(rails)
     end
   end
 
-  def run_context(ruby_command='ruby')
+  def run_context
     method_name = nil
     context_line_number = nil
 
@@ -128,7 +143,7 @@ class RubyTest
     end
   end
 
-  def run_all(rails=false, ruby_command='ruby')
+  def run_all(rails=false)
     if spec_file?
       send_to_vimux("#{spec_command} '#{current_file}'")
     else
