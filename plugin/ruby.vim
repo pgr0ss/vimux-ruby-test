@@ -59,6 +59,8 @@ module VIM
 end
 
 class RubyTest
+  RSPEC_VERSION_REGEX = /(\d+\.\d+\.\d+)/
+
   attr_reader :ruby_command
   attr_reader :use_relative_path
 
@@ -156,7 +158,9 @@ class RubyTest
       'zeus rspec'
     elsif File.exists?('./bin/rspec')
       './bin/rspec'
-    elsif File.exists?("Gemfile") && (match = `bundle show rspec-core`.scan(/(\d+\.\d+\.\d+)/) || match = `bundle show rspec`.scan(/(\d+\.\d+\.\d+)/i))
+    elsif File.exists?("Gemfile.lock") && rspec_version = get_locked_rspec_version
+      rspec_version.to_f < 2 ? "bundle exec spec" : "bundle exec rspec"
+    elsif File.exists?("Gemfile") && (match = `bundle show rspec-core`.scan(RSPEC_VERSION_REGEX) || match = `bundle show rspec`.scan(RSPEC_VERSION_REGEX))
       match.flatten.last.to_f < 2 ? "bundle exec spec" : "bundle exec rspec"
     else
       system("rspec -v > /dev/null 2>&1") ? "rspec --no-color" : "spec"
@@ -171,6 +175,17 @@ class RubyTest
     end
     cmd += test_command
     Vim.command("call VimuxRunCommand(\"#{cmd}\")")
+  end
+
+  private
+
+  def get_locked_rspec_version
+    matches = get_locked_gem_version('rspec-core').scan(RSPEC_VERSION_REGEX) || get_locked_gem_version('rspec').scan(RSPEC_VERSION_REGEX)
+    matches.flatten.last
+  end
+
+  def get_locked_gem_version(gem_name)
+    `cat Gemfile.lock | grep '#{gem_name} (' | grep -v '[~,<,>,=]' | awk -F'[()]' '{print $2}'`
   end
 end
 EOF
