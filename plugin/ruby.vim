@@ -50,14 +50,6 @@ function s:RunRubyFocusedContext()
 endfunction
 
 ruby << EOF
-module VIM
-  class Buffer
-    def method_missing(method, *args, &block)
-      VIM.command "#{method} #{self.name}"
-    end
-  end
-end
-
 class RubyTest
   RSPEC_VERSION_REGEX = /(\d+\.\d+\.\d+)/
 
