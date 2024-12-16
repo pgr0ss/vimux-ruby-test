@@ -146,13 +146,13 @@ class RubyTest
   end
 
   def spec_command
-    if File.exists?('./.zeus.sock')
+    if File.exist?('./.zeus.sock')
       'zeus rspec'
-    elsif File.exists?('./bin/rspec')
+    elsif File.exist?('./bin/rspec')
       './bin/rspec'
-    elsif File.exists?("Gemfile.lock") && rspec_version = get_locked_rspec_version
+    elsif File.exist?("Gemfile.lock") && rspec_version = get_locked_rspec_version
       rspec_version.to_f < 2 ? "bundle exec spec" : "bundle exec rspec"
-    elsif File.exists?("Gemfile") && (match = `bundle show rspec-core`.scan(RSPEC_VERSION_REGEX) || match = `bundle show rspec`.scan(RSPEC_VERSION_REGEX))
+    elsif File.exist?("Gemfile") && (match = `bundle show rspec-core`.scan(RSPEC_VERSION_REGEX) || match = `bundle show rspec`.scan(RSPEC_VERSION_REGEX))
       match.flatten.last.to_f < 2 ? "bundle exec spec" : "bundle exec rspec"
     else
       system("rspec -v > /dev/null 2>&1") ? "rspec" : "spec"
